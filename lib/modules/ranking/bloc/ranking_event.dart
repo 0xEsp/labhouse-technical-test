@@ -16,3 +16,5 @@ final class RankingGeneration extends RankingEvent {
   @override
   List<Object> get props => [query, model];
 }
+
+final class RankingFetch extends RankingEvent {}

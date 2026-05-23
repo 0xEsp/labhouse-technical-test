@@ -4,6 +4,7 @@ import 'package:lab_house/modules/config/usecases/change_theme_usecase.dart';
 import 'package:lab_house/modules/config/usecases/save_api_key_usecase.dart';
 import 'package:lab_house/modules/environment/usecases/change_environment_usecase.dart';
 import 'package:lab_house/modules/ranking/usecases/generate_ranking_usecase.dart';
+import 'package:lab_house/modules/ranking/usecases/get_rankings_usecase.dart';
 
 extension UseCaseAssembly on Assembly {
   void setUseCaseAssembly() {
@@ -31,6 +32,10 @@ extension UseCaseAssembly on Assembly {
 
     getIt.registerLazySingleton<GenerateRankingUseCase>(
       () => GenerateRankingUseCaseDefault(),
+    );
+
+    getIt.registerLazySingleton<GetRankingsUseCase>(
+      () => GetRankingsUseCaseDefault(),
     );
   }
 }

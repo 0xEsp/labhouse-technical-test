@@ -77,12 +77,29 @@ dependencies:
   # https://pub.dev/packages/cached_network_image
   cached_network_image: 3.4.1
 
+  # Fast, local NoSQL database. Community-maintained fork of Isar 3 (same API)
+  # kept compatible with modern Dart/analyzer.
+  # https://pub.dev/packages/isar_community
+  isar_community: 3.3.2
+
+  # Native Isar Core binaries bundled with the Flutter app
+  # https://pub.dev/packages/isar_community_flutter_libs
+  isar_community_flutter_libs: 3.3.2
+
+  # Resolves the platform documents directory used to open the database
+  # https://pub.dev/packages/path_provider
+  path_provider: 2.1.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
   build_runner: ^2.7.0
-  json_serializable: 6.10.0
+  json_serializable: 6.11.4
+
+  # Code generator for Isar collections/embedded objects
+  # https://pub.dev/packages/isar_community_generator
+  isar_community_generator: 3.3.2
 
 # The following section is specific to Flutter packages.
 flutter:

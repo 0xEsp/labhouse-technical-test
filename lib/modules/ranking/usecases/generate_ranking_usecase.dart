@@ -35,6 +35,8 @@ class GenerateRankingUseCaseDefault
       resultParser: _parseResponse,
     );
 
+    await save<RankingDTO>(dto);
+
     return Ranking.fromDTO(dto);
   }
 

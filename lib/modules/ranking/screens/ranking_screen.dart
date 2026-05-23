@@ -52,12 +52,16 @@ class RankingScreen extends StatelessWidget {
                 width: 200,
                 child: LabhouseButton(
                   text: 'pruebas',
-                  onPressed: () => context.read<RankingBloc>().add(
-                    RankingGeneration(
-                      query: 'Give me the most 10 books of entrepreneurship',
-                      model: .gpt4oMini,
-                    ),
-                  ),
+                  onPressed: () => {
+                    context.read<RankingBloc>().add(RankingFetch()),
+
+                    // context.read<RankingBloc>().add(
+                    //   RankingGeneration(
+                    //     query: 'Give me the most 10 books of entrepreneurship',
+                    //     model: .gpt4oMini,
+                    //   ),
+                    // ),
+                  },
                 ),
               ),
             ),

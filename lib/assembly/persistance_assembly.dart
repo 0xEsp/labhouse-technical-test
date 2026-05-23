@@ -1,5 +1,6 @@
 import 'package:lab_house/assembly/assembly.dart';
 import 'package:lab_house/core/cache/cache_storage.dart';
+import 'package:lab_house/core/local_service.dart';
 import 'package:lab_house/core/secure/secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,5 +23,11 @@ extension PersistanceAssembly on Assembly {
     // MARK: - Shared
 
     getIt.registerSingleton<SharedPreferencesAsync>(SharedPreferencesAsync());
+
+    // MARK: - Local database
+
+    getIt.registerSingletonAsync<LocalService>(
+      () async => await LocalServiceDefault.init(),
+    );
   }
 }

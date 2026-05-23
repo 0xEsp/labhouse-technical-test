@@ -1,16 +1,20 @@
-import 'package:equatable/equatable.dart';
+import 'package:isar_community/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'ranking.dto.m.g.dart';
 
+@collection
 @JsonSerializable(createToJson: false)
-class RankingDTO extends Equatable {
+class RankingDTO {
+  @JsonKey(includeFromJson: false)
+  Id id = Isar.autoIncrement;
+
   final String topicImage, topicName, topicDescription;
   final RankingProviderDTO provider;
   final int comments;
   final List<RankingArticleDTO> articles;
 
-  const RankingDTO({
+  RankingDTO({
     required this.topicImage,
     required this.topicName,
     required this.topicDescription,
@@ -23,64 +27,46 @@ class RankingDTO extends Equatable {
   /// factory.
   factory RankingDTO.fromJson(Object? json) =>
       _$RankingDTOFromJson(json as Map<String, dynamic>);
-
-  // MARK: - Equatable
-
-  @override
-  List<Object?> get props => [
-    topicImage,
-    topicName,
-    topicDescription,
-    provider,
-    comments,
-    articles,
-  ];
 }
 
+@embedded
 @JsonSerializable(createToJson: false)
-class RankingProviderDTO extends Equatable {
+class RankingProviderDTO {
   final String name;
   final String? image;
 
-  const RankingProviderDTO({required this.name, required this.image});
+  const RankingProviderDTO({this.name = '', this.image});
 
   factory RankingProviderDTO.fromJson(Object? json) =>
       _$RankingProviderDTOFromJson(json as Map<String, dynamic>);
-
-  @override
-  List<Object?> get props => [name, image];
 }
 
+@embedded
 @JsonSerializable(createToJson: false)
-class RankingArticleDTO extends Equatable {
+class RankingArticleDTO {
   final String? image;
   final String name, description;
   final RankingRatingDTO rating;
 
   const RankingArticleDTO({
-    required this.image,
-    required this.name,
-    required this.description,
-    required this.rating,
+    this.image,
+    this.name = '',
+    this.description = '',
+    this.rating = const RankingRatingDTO(),
   });
 
   factory RankingArticleDTO.fromJson(Object? json) =>
       _$RankingArticleDTOFromJson(json as Map<String, dynamic>);
-
-  @override
-  List<Object?> get props => [image, name, description, rating];
 }
 
+@embedded
 @JsonSerializable(createToJson: false)
-class RankingRatingDTO extends Equatable {
+class RankingRatingDTO {
   final double value;
   final int quantity;
 
-  const RankingRatingDTO({required this.value, required this.quantity});
+  const RankingRatingDTO({this.value = 0, this.quantity = 0});
 
   factory RankingRatingDTO.fromJson(Object? json) =>
       _$RankingRatingDTOFromJson(json as Map<String, dynamic>);
-
-  @override
-  List<Object?> get props => [value, quantity];
 }

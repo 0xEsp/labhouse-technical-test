@@ -4,6 +4,7 @@ import 'package:lab_house/assembly/assembly.dart';
 import 'package:lab_house/common/utils.dart';
 import 'package:lab_house/core/api/api_client_adapter.dart';
 import 'package:lab_house/core/api/model/api_response_error.m.dart';
+import 'package:lab_house/core/local_service.dart';
 import 'package:lab_house/core/managers/secrets_manager.dart';
 import 'package:lab_house/modules/environment/shared/environment.dart';
 
@@ -11,8 +12,9 @@ part 'api/model/api_endpoint.m.dart';
 part 'api/model/http_method.m.dart';
 part 'api/api_service.dart';
 
-mixin DataService implements ApiService {
+mixin DataService implements ApiService, LocalService {
   final _api = container.get<ApiService>();
+  final _local = container.get<LocalService>();
 
   @override
   Future<T> request<T>({
@@ -39,4 +41,15 @@ mixin DataService implements ApiService {
 
   @override
   void updateEnvironmentUrl(String newUrl) {}
+
+  // MARK: - Local database
+
+  @override
+  Future<int> save<T>(T object) => _local.save<T>(object);
+
+  @override
+  Future<List<T>> getAll<T>() => _local.getAll<T>();
+
+  @override
+  Future<void> clear<T>() => _local.clear<T>();
 }
