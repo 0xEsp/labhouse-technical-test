@@ -1,7 +1,7 @@
 part of '../../data_service.dart';
 
 enum ApiEndpoint {
-  startup('/config/startup');
+  responses('/responses');
 
   final String path;
 

@@ -3,7 +3,6 @@ part of '../data_service.dart';
 abstract class ApiService {
   Future<T> request<T>({
     required String path,
-    required String base,
     required String version,
     required HTTPMethod method,
     required Map<String, dynamic>? queryParameters,
@@ -37,7 +36,6 @@ final class ApiServiceDefault implements ApiService {
   @override
   Future<T> request<T>({
     required String path,
-    required String base,
     required String version,
     required HTTPMethod method,
     required Map<String, dynamic>? queryParameters,
@@ -51,7 +49,7 @@ final class ApiServiceDefault implements ApiService {
       'If generic type is null, resultParser cannot be provided',
     );
 
-    final url = '$base$version$path';
+    final url = '$version$path';
 
     try {
       final headers = await _loadRequestHeaders(extraHeaders);

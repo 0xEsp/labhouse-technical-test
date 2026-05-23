@@ -17,7 +17,6 @@ mixin DataService implements ApiService {
   @override
   Future<T> request<T>({
     required String path,
-    String base = '/api',
     String version = '/v1',
     HTTPMethod method = HTTPMethod.get,
     Map<String, dynamic>? queryParameters,
@@ -28,7 +27,6 @@ mixin DataService implements ApiService {
   }) async {
     return await _api.request<T>(
       path: path,
-      base: base,
       version: version,
       method: method,
       queryParameters: queryParameters,
