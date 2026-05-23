@@ -1,12 +1,19 @@
-part of 'home_bloc.dart';
+part of 'home_cubit.dart';
 
-sealed class HomeState extends Equatable {
-  const HomeState();
+class HomeState extends Equatable {
+  // MARK: - Properties
+
+  final int currentIndex;
+
+  // MARK: - Lifecycle
+
+  const HomeState({this.currentIndex = 0});
+
+  // MARK: - Copy
+
+  HomeState copyWith({int? currentIndex}) =>
+      HomeState(currentIndex: currentIndex ?? this.currentIndex);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [currentIndex];
 }
-
-final class HomeInitial extends HomeState {}
-
-final class HomeContentLoaded extends HomeState {}
