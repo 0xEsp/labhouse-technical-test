@@ -39,4 +39,15 @@ extension JGColors on Colors {
   // MARK: - Purple
 
   static Color get primaryPurple => const Color(0xFF0515E1);
+
+  // MARK: - Dark mode surfaces
+
+  /// App background in dark mode.
+  static Color get darkBackground => const Color(0xFF121212);
+
+  /// Elevated surfaces (cards, app bar) in dark mode.
+  static Color get darkSurface => const Color(0xFF1E1E1E);
+
+  /// Primary text/icon color on dark surfaces.
+  static Color get darkOnSurface => const Color(0xFFE6E6E6);
 }

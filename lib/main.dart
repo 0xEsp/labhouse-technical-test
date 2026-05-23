@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lab_house/assembly/assembly.dart';
 import 'package:lab_house/core/base_bloc/base_bloc.dart';
 import 'package:lab_house/labhouse_app.dart';
+import 'package:lab_house/modules/config/bloc/settings_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,5 +11,13 @@ Future<void> main() async {
   container.setup();
   await container.setupCompleted();
 
-  runApp(BlocProvider(create: (_) => BaseBloc(), child: LabhouseApp()));
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => BaseBloc()),
+        BlocProvider(create: (_) => SettingsCubit()),
+      ],
+      child: LabhouseApp(),
+    ),
+  );
 }

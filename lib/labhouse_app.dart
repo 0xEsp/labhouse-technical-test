@@ -7,6 +7,7 @@ import 'package:lab_house/common/lazy.dart';
 import 'package:lab_house/common/presentation/state/life_cycle_handler.dart';
 import 'package:lab_house/common/router/router_key.dart';
 import 'package:lab_house/core/base_bloc/base_bloc.dart';
+import 'package:lab_house/core/managers/app_settings_manager.dart';
 import 'package:lab_house/core/managers/channel_manager.dart';
 import 'package:lab_house/core/managers/navigation_manager.dart';
 import 'package:lab_house/extensions/theme/labhouse_theme.dart';
@@ -30,6 +31,7 @@ class _LabhouseAppState extends State<LabhouseApp> with NavigationManager {
   );
 
   final _channelManager = container.get<ChannelManager>();
+  final _appSettings = container.get<AppSettingsManager>();
 
   bool _canPresentChangeEnvSheet = true;
 
@@ -48,13 +50,21 @@ class _LabhouseAppState extends State<LabhouseApp> with NavigationManager {
 
   @override
   Widget build(BuildContext context) {
-    final app = MaterialApp.router(
-      title: 'Labhouse',
-      theme: LabhouseTheme.light,
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: router,
+    // Rebuilds whenever the user changes appearance/language so the whole app
+    // re-themes and re-localizes live.
+    final app = ListenableBuilder(
+      listenable: _appSettings,
+      builder: (context, _) => MaterialApp.router(
+        title: 'Labhouse',
+        theme: LabhouseTheme.light,
+        darkTheme: LabhouseTheme.dark,
+        themeMode: _appSettings.materialThemeMode,
+        locale: _appSettings.locale,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: router,
+      ),
     );
 
     return BlocBuilder<BaseBloc, BaseState>(

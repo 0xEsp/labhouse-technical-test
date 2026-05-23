@@ -25,4 +25,20 @@ extension LabhouseTheme on ThemeData {
     bottomSheetTheme: LabhouseBottomSheetTheme.main,
     cardTheme: LabhouseCardTheme.base.data,
   );
+
+  static ThemeData get dark => ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.dark,
+    splashColor: Colors.transparent,
+    highlightColor: JGColors.darkOnSurface.withValues(alpha: .3),
+    focusColor: Colors.transparent,
+    colorScheme: ColorScheme.fromSwatch(
+      brightness: Brightness.dark,
+    ).copyWith(secondary: Colors.transparent),
+    scaffoldBackgroundColor: JGColors.darkBackground,
+    inputDecorationTheme: LabhouseInputTheme.base,
+    appBarTheme: LabhouseAppBarTheme.dark,
+    bottomSheetTheme: LabhouseBottomSheetTheme.main,
+    cardTheme: LabhouseCardTheme.dark.data,
+  );
 }

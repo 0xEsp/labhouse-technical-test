@@ -1,4 +1,7 @@
 import 'package:lab_house/assembly/assembly.dart';
+import 'package:lab_house/modules/config/usecases/change_language_usecase.dart';
+import 'package:lab_house/modules/config/usecases/change_theme_usecase.dart';
+import 'package:lab_house/modules/config/usecases/save_api_key_usecase.dart';
 import 'package:lab_house/modules/environment/usecases/change_environment_usecase.dart';
 
 extension UseCaseAssembly on Assembly {
@@ -7,6 +10,20 @@ extension UseCaseAssembly on Assembly {
 
     getIt.registerLazySingleton<ChangeEnvironmentUseCase>(
       () => ChangeEnvironmentUseCaseDefault(),
+    );
+
+    // MARK: - Settings
+
+    getIt.registerLazySingleton<ChangeThemeUseCase>(
+      () => ChangeThemeUseCaseDefault(),
+    );
+
+    getIt.registerLazySingleton<ChangeLanguageUseCase>(
+      () => ChangeLanguageUseCaseDefault(),
+    );
+
+    getIt.registerLazySingleton<SaveApiKeyUseCase>(
+      () => SaveApiKeyUseCaseDefault(),
     );
   }
 }

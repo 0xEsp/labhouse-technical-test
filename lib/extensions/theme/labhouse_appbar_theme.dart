@@ -16,4 +16,20 @@ extension LabhouseAppBarTheme on AppBarTheme {
     iconTheme: IconThemeData(color: JGColors.primaryTurquoise, size: 24),
     actionsPadding: EdgeInsets.symmetric(horizontal: 16),
   );
+
+  static AppBarTheme get dark => AppBarTheme(
+    surfaceTintColor: Colors.transparent,
+    backgroundColor: JGColors.darkSurface,
+    shadowColor: Colors.black.withAlpha(120),
+    elevation: 0,
+    scrolledUnderElevation: 2,
+    centerTitle: true,
+    titleSpacing: 0,
+    titleTextStyle: LabhouseTextTheme.semibold(
+      size: 18,
+      color: JGColors.darkOnSurface,
+    ),
+    iconTheme: IconThemeData(color: JGColors.primaryTurquoise, size: 24),
+    actionsPadding: EdgeInsets.symmetric(horizontal: 16),
+  );
 }

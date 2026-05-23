@@ -11,4 +11,12 @@ extension LabhouseCardTheme on CardTheme {
     margin: EdgeInsets.zero,
     shape: RoundedRectangleBorder(borderRadius: defaultRadius),
   );
+
+  static CardTheme get dark => CardTheme(
+    color: JGColors.darkSurface,
+    surfaceTintColor: JGColors.darkSurface,
+    elevation: .5,
+    margin: EdgeInsets.zero,
+    shape: RoundedRectangleBorder(borderRadius: defaultRadius),
+  );
 }
