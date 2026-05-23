@@ -1,0 +1,21 @@
+{
+  "@@locale": "es",
+  "internal_error": "Ha ocurrido un error interno",
+  "@internal_error": {},
+  "a_problem_has_appear": "Ha surgido un problema",
+  "@a_problem_has_appear": {},
+  "accept": "Aceptar",
+  "@accept": {},
+  "close": "Cerrar",
+  "@close": {},
+  "cancel": "Cancelar",
+  "@cancel": {},
+  "search": "Buscar",
+  "@search": {},
+  "ranking_tap_copy": "Rankings",
+  "@ranking_tap_copy": {},
+  "config_tap_copy": "Ajustes",
+  "@config_tap_copy": {},
+  "mandatory_field": "Este campo es obligatorio",
+  "@mandatory_field": {}
+}

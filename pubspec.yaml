@@ -1,0 +1,114 @@
+name: lab_house
+description: 'Labhouse flutter for mobile native applications'
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # Default icons asset for Cupertino widgets based on Apple styled
+  # https://pub.dev/packages/cupertino_icons
+  cupertino_icons: ^1.0.8
+
+  # Plugin to store data in secure storage. Keychain on iOS, AES encryption on Android
+  # https://pub.dev/packages/flutter_secure_storage
+  flutter_secure_storage: 9.2.4
+
+  # Platform-specific persistent storage for simple data. UserDefaults on iOS, SharedPreferences on Android
+  # https://pub.dev/packages/shared_preferences
+  shared_preferences: 2.5.3
+
+  # A powerful HTTP networking package
+  # https://pub.dev/packages/dio
+  dio: 5.9.0
+
+  # This plugin allows Flutter apps to discover network connectivity types that can be used.
+  # https://pub.dev/packages/connectivity_plus
+  connectivity_plus: 6.1.5
+
+  # DI
+  # https://pub.dev/packages/get_it
+  get_it: 8.2.0
+
+  # For internationalization and localization facilities
+  # https://pub.dev/packages/intl
+  intl: 0.20.2
+
+  # Related to json_serializable package
+  # https://pub.dev/packages/json_annotation
+  json_annotation: 4.9.0
+
+  # Being able to compare objects in Dart.
+  # https://pub.dev/packages/equatable
+  equatable: 2.0.7
+
+  # Parses Adobe After Effects animations exported as json with Bodymovin and renders.
+  # https://pub.dev/packages/lottie
+  lottie: 3.3.1
+
+  # Handle fire a callback when the widget's visibility changes.
+  # https://pub.dev/packages/visibility_detector
+  visibility_detector: 0.4.0+2
+
+  # Declarative routing package for navigation between different screens
+  # https://pub.dev/packages/go_router
+  go_router: 16.2.1
+
+  # Widgets that make it easy to integrate blocs and cubits into Flutter
+  # https://pub.dev/packages/flutter_bloc
+  flutter_bloc: 9.1.1
+
+  # Event transformers for bloc concurrency
+  # https://pub.dev/packages/bloc_concurrency
+  bloc_concurrency: 0.3.0
+
+  # Draw SVG files using Flutter
+  # https://pub.dev/packages/flutter_svg
+  flutter_svg: 2.2.1
+
+  # A flutter library to show images from the internet and keep them in the cache directory.
+  # https://pub.dev/packages/cached_network_image
+  cached_network_image: 3.4.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.7.0
+  json_serializable: 6.10.0
+
+# The following section is specific to Flutter packages.
+flutter:
+  # This enables code generation for Flutter modules, allowing you to use localizable strings with ARB files.
+  generate: true
+  uses-material-design: true
+
+  assets:
+    - assets/fonts/
+    - assets/images/
+    - assets/images/common/
+    - assets/animations/
+  fonts:
+    - family: 'InterTight'
+      fonts:
+        - asset: assets/fonts/inter-tight/InterTight-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter-tight/InterTight-Thin.ttf
+        - asset: assets/fonts/inter-tight/InterTight-Light.ttf
+        - asset: assets/fonts/inter-tight/InterTight-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/inter-tight/InterTight-SemiBold.ttf
+          weight: 600
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/to/resolution-aware-images
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/to/asset-from-package

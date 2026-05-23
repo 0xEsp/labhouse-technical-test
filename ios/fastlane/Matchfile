@@ -1,0 +1,7 @@
+git_url("https://github.com/petit-labs/PetitIOSCerts")
+storage_mode("git")
+git_branch("master")
+type("development")             				# The default type, can be: appstore, adhoc, enterprise or development
+team_id("ABRS3PLG9V")           				# This can be fetched from developer account
+team_name("PETIT COMMUNITY SOCIEDAD LIMITADA")  # This can be fetched from developer account
+username("manuespeso@icloud.com")   			# This is the developer account responsible for the certificates. In a company case it could be an account created for the CI.

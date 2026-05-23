@@ -1,0 +1,12 @@
+{
+  "@@locale": "en",
+  "internal_error": "An internal error has appeared",
+  "a_problem_has_appear": "A problem has appeared",
+  "accept": "Accept",
+  "close": "Close",
+  "cancel": "Cancel",
+  "search": "Search",
+  "ranking_tap_copy": "Rankings",
+  "config_tap_copy": "Settings",
+  "mandatory_field": "This field is mandatory"
+}

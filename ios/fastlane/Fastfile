@@ -1,0 +1,296 @@
+platform :ios do
+
+  # Private Lane - Setup Local Variables (.env)
+  desc "Setup Local Variables"
+  private_lane :setup_variables do
+    # CI/CD Variables
+    MATCH_PASSWORD=ENV["MATCH_PASSWORD"]
+    MATCH_USERNAME=ENV["MATCH_USERNAME"]
+    MATCH_GIT_BASIC_AUTHORIZATION=ENV["MATCH_GIT_BASIC_AUTHORIZATION"]
+
+    # Apple Store Connect Variables
+    APP_STORE_CONNECT_API_KEY_ISSUER_ID = ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"]
+    # Development profile
+    APP_STORE_CONNECT_API_KEY_DEVELOPMENT_KEY_ID = ENV["APP_STORE_CONNECT_API_KEY_DEVELOPMENT_KEY_ID"]
+    APP_STORE_CONNECT_API_KEY_DEVELOPMENT_KEY = ENV["APP_STORE_CONNECT_API_KEY_DEVELOPMENT_KEY"]
+    # App manager profile
+    APP_STORE_CONNECT_API_KEY_APP_MANAGER_KEY_ID = ENV["APP_STORE_CONNECT_API_KEY_APP_MANAGER_KEY_ID"]
+    APP_STORE_CONNECT_API_KEY_APP_MANAGER_KEY = ENV["APP_STORE_CONNECT_API_KEY_APP_MANAGER_KEY"]
+    
+    # Apple IDs
+    DEVELOPER_APP_IDENTIFIER = ENV["DEVELOPER_APP_IDENTIFIER"]
+    DEVELOPER_APP_ID = ENV["DEVELOPER_APP_ID"]
+    DEV_PROVISIONING_PROFILE_SPECIFIER = ENV["DEV_PROVISIONING_PROFILE_SPECIFIER"]
+    PRO_PROVISIONING_PROFILE_SPECIFIER = ENV["PRO_PROVISIONING_PROFILE_SPECIFIER"]
+    DEV_CODE_SIGNING_IDENTITY = ENV["DEV_CODE_SIGNING_IDENTITY"]
+    PRO_CODE_SIGNING_IDENTITY = ENV["PRO_CODE_SIGNING_IDENTITY"]
+
+    #Common Variables
+    SLACK_HOOK_URL = ENV["SLACK_HOOK_URL"]
+    SRC_SCHEME = ENV["SRC_SCHEME"]
+    SRC_WORKSPACE = ENV["SRC_WORKSPACE"]
+    CHANGELOG_MESSAGE = ENV["CHANGELOG_MESSAGE"]
+  end
+
+  # =============
+  # PRIVATE LANES
+  # =============
+
+  # Private Lane - Connect to App Store Connect (Development profile)
+  private_lane :app_store_connection_development do
+    api_key = app_store_connect_api_key(
+      issuer_id: APP_STORE_CONNECT_API_KEY_ISSUER_ID,
+      key_id: APP_STORE_CONNECT_API_KEY_DEVELOPMENT_KEY_ID,
+      key_content: APP_STORE_CONNECT_API_KEY_DEVELOPMENT_KEY,            
+      duration: 1200,            
+      in_house: false
+    )
+  end
+
+  # Private Lane - Connect to App Store Connect (App Manager profile)
+  private_lane :app_store_connection_appmanager do
+    api_key = app_store_connect_api_key(
+      issuer_id: APP_STORE_CONNECT_API_KEY_ISSUER_ID,
+      key_id: APP_STORE_CONNECT_API_KEY_APP_MANAGER_KEY_ID,
+      key_content: APP_STORE_CONNECT_API_KEY_APP_MANAGER_KEY,            
+      duration: 1200,            
+      in_house: false
+    )
+  end
+
+  # Private Lane - Commit Changes
+  desc "Commit Changes"
+  private_lane :commit_changes do
+    branch_name = git_branch
+    current_build_number = get_build_number
+    CURRENT_MARKETING_VERSION = `bash ../../scripts/get_marketing_version.sh`
+
+    git_commit(
+      path: ["../"],
+      message: "Fastlane: Upload development app 🍎 version #{CURRENT_MARKETING_VERSION}+#{current_build_number}"
+    )
+
+    push_to_git_remote(
+      remote: "origin",
+      local_branch: "HEAD",
+      remote_branch: branch_name,
+      tags: false,
+    )
+  end
+
+  # Private Lane - Get latest git commit message (Local)
+  desc "Get latest Git commit message (Local)"
+  private_lane :get_latest_commit_local do 
+    commit_message = last_git_commit
+    CHANGELOG_MESSAGE = commit_message[:message]
+    
+    puts("#{CHANGELOG_MESSAGE}")
+  end
+
+  # Private Lane - Install CocoaPods
+  private_lane :install_pods do
+    cocoapods(
+      clean_install: false,    #clean_install executes a full pod installation ignoring the content of the project cache
+      use_bundle_exec: true,   #use_bundle_exec uses bundle exec when there is a Gemfile presented
+      try_repo_update_on_error: true, #Retry with --repo-update if action was finished with error
+      verbose: false # verbose mode
+    )
+  end
+  
+  # Private Lane - Send succesfully completed upload message into slack
+  private_lane :slack_message_success do
+    current_build_number = get_build_number
+    CURRENT_MARKETING_VERSION = `bash ../../scripts/get_marketing_version.sh`
+    
+    slack(
+      message: "Successfully distributed 🍎 version #{CURRENT_MARKETING_VERSION}+#{current_build_number}",
+      success: true,
+      slack_url: SLACK_HOOK_URL
+    )
+  end
+    
+  # Private Lane - Send error message due uncompleted upload app version into slack
+  private_lane :slack_message_error do |values|
+    exception = values[:exception]
+    current_build_number = get_build_number
+    CURRENT_MARKETING_VERSION = `bash ../../scripts/get_marketing_version.sh`
+
+    slack(
+        message: "Error trying distributed 🍎 version #{CURRENT_MARKETING_VERSION}+#{current_build_number}",
+        success: false,
+        slack_url: SLACK_HOOK_URL,
+        attachment_properties: {
+            fields: [
+                {
+                    title: "Error message",
+                    value: exception
+                }
+            ]
+        }
+    )
+  end
+  
+  # ==============
+  # PRE-REQUISITES
+  # ==============
+
+  # Pre-requisites (before_all)
+  before_all do
+    setup_variables
+    print_environment
+  end
+
+  # ============
+  # PUBLIC LANES
+  # ============
+
+  # Public Lane - Print environment - OK
+  desc "Print environment"
+  lane :print_environment do
+    puts("GitHub Username: #{ENV["MATCH_USERNAME"]}")
+    puts("App Store Connect API Key Issuer ID: #{ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"]}")
+  end
+
+  # Public Lane - Fetch Certificates (development)
+  desc "Fetch Certificates - development"
+  lane :fetch_certificates_development do
+    bundle_identifiers = [DEVELOPER_APP_IDENTIFIER, DEVELOPER_APP_NOTIFICATION_EXTENSION_IDENTIFIER]
+    
+    match(
+      type: "development",                  # type can be any of: appstore, adhoc, development, enterprise, developer_id, mac_installer_distribution
+      app_identifier: bundle_identifiers,   # app_identifier can be an array or a single bundle identifier. At the end of the project the bundle identifiers will be used as global variable to be used in this lane and in update_certificates      
+      readonly: true,                       # Read only is set to be true in this lane since we just need to fetch the certificates and no update is expected
+      force_for_new_devices: true           # Forces for new devices
+    )
+  end
+
+  # Public Lane - Fetch Certificates (appstore)
+  desc "Fetch Certificates - appstore (distribution)"
+  lane :fetch_certificates_appstore do
+    bundle_identifiers = [DEVELOPER_APP_IDENTIFIER]
+    
+    match(
+      type: "appstore",                     # type can be any of: appstore, adhoc, development, enterprise, developer_id, mac_installer_distribution
+      app_identifier: bundle_identifiers,   # app_identifier can be an array or a single bundle identifier. At the end of the project the bundle identifiers will be used as global variable to be used in this lane and in update_certificates      
+      readonly: true,                       # Read only is set to be true in this lane since we just need to fetch the certificates and no update is expected
+      force_for_new_devices: true           # Forces for new devices
+    )
+  end
+
+  # Public Lane - Update Certificates Lane
+  desc "Update Certificates - development"
+  lane :update_certificates_development do
+    bundle_identifiers = [DEVELOPER_APP_IDENTIFIER]
+    app_store_connection_appmanager
+
+    match(
+      type: "development",                  # type can be any of: appstore, adhoc, development, enterprise, developer_id, mac_installer_distribution
+      app_identifier: bundle_identifiers,   # app_identifier can be an array or a single bundle identifier. At the end of the project the bundle identifiers will be used as global variable to be used in this lane and in update_certificates
+      force: true                           # force is set to true in order to forcly update certificates if the don't match our requirements (for example if we have a new device registered)
+    )
+  end
+
+  # Public Lane - Update Certificates Lane - OK
+  desc "Update Certificates - appstore (distribution)"
+  lane :update_certificates_appstore do
+    bundle_identifiers = [DEVELOPER_APP_IDENTIFIER]
+    app_store_connection_appmanager
+    
+    match(
+      type: "appstore",                     # type can be any of: appstore, adhoc, development, enterprise, developer_id, mac_installer_distribution
+      app_identifier: bundle_identifiers,   # app_identifier can be an array or a single bundle identifier. At the end of the project the bundle identifiers will be used as global variable to be used in this lane and in update_certificates
+      force: true                           # force is set to true in order to forcly update certificates if the don't match our requirements (for example if we have a new device registered)
+    )
+  end
+
+  # Public Lane - Development pipeline (signed)
+  desc "Pipeline for building and uploading to TestFlight using development environment"
+  lane :pipeline_build_upload_dev do
+    begin
+      get_latest_commit_local
+      build_sign development_mode:true
+      upload_testflight
+      slack_message_success
+      commit_changes
+    rescue => exception
+      slack_message_error exception:exception
+    end
+  end
+  
+  # Public Lane - Production pipeline (signed)
+  desc "Pipeline for building and uploading to TestFlight using production environment"
+  lane :pipeline_build_upload_pro do
+    begin
+      get_latest_commit_local
+      build_sign development_mode:false
+      upload_testflight
+      slack_message_success
+      commit_changes
+    rescue => exception
+      slack_message_error exception:exception
+    end
+  end
+  
+  # Public Lane - Build the app (signed)
+  desc "Build the app (signed)"
+  lane :build_sign do |options|
+    development_mode = options[:development_mode] || false
+
+    increment_build_number(skip_info_plist: true)
+
+    if development_mode
+      fetch_certificates_development
+    else
+      fetch_certificates_appstore
+    end
+
+    # TODO: refactor using only flutter build ipa
+    # https://docs.flutter.dev/deployment/ios#create-an-app-bundle
+
+    # need to build app with script before gym for load .env into Generated.xcconfig & flutter_export_environment.sh
+    begin
+      sh "flutter build ios --release --dart-define-from-file=.env/secrets.json -t lib/main.dart"
+    rescue => exception
+      UI.message("Error building flutter version probably due not installed flutter, more details: #{exception}")
+      sh "fvm flutter build ios --release --dart-define-from-file=.env/secrets.json -t lib/main.dart"
+    end
+    
+    #https://docs.fastlane.tools/actions/gym/
+    gym(
+      workspace: SRC_WORKSPACE,
+      scheme: SRC_SCHEME,
+      configuration: "Release",
+      codesigning_identity: PRO_CODE_SIGNING_IDENTITY,
+      clean: false,
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: { 
+          DEVELOPER_APP_IDENTIFIER => PRO_PROVISIONING_PROFILE_SPECIFIER
+        }
+      }
+    )
+  end
+
+  # Public Lane - Upload to testflight
+  desc "Upload to testflight"
+  lane :upload_testflight do
+    # Needed for the api_key
+    app_store_connection_appmanager
+
+    #https://docs.fastlane.tools/actions/pilot/
+    pilot(
+      apple_id: "#{DEVELOPER_APP_ID}",
+      app_identifier: "#{DEVELOPER_APP_IDENTIFIER}",
+      skip_waiting_for_build_processing: true,
+      skip_submission: true,
+      distribute_external: true,
+      changelog: "#{CHANGELOG_MESSAGE}",
+      groups: ["Grupo Test"],
+      notify_external_testers: false, 
+      ipa: "./Runner.ipa"
+    )
+
+    clean_build_artifacts
+  end
+
+end

@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "flutter",
+      "command": "flutter",
+      "args": ["install"],
+      "problemMatcher": [],
+      "label": "flutter: install",
+      "detail": ""
+    },
+    {
+      "type": "flutter",
+      "command": "flutter",
+      "args": [
+        "build",
+        "ios",
+        "-t",
+        "lib/main.dart",
+        "--dart-define-from-file=.env/secrets.json"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "label": "flutter: build ios",
+      "detail": ""
+    },
+    {
+      "type": "flutter",
+      "command": "flutter",
+      "args": [
+        "build",
+        "apk",
+        "-t",
+        "lib/main.dart",
+        "--dart-define-from-file=.env/secrets.json"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "label": "flutter: build apk"
+    }
+  ]
+}

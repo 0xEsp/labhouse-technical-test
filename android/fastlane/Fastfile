@@ -1,0 +1,146 @@
+default_platform(:android)
+
+platform :android do
+
+  # Private Lane - Setup Local Variables (.env)
+  desc "Setup Local Variables"
+  private_lane :setup_variables do
+    # Google play console Variables
+    GOOGLE_STORE_AUTH_CREDENTIALS = ENV["GOOGLE_STORE_AUTH_CREDENTIALS"]
+
+    #Common Variables
+    SLACK_HOOK_URL = ENV["SLACK_HOOK_URL"]
+    CHANGELOG_MESSAGE = ENV["CHANGELOG_MESSAGE"]
+  end
+
+  # =============
+  # PRIVATE LANES
+  # =============
+
+  # Private Lane - Get latest git commit message (Local)
+  desc "Get latest Git commit message (Local)"
+  private_lane :get_latest_commit_local do 
+    commit_message = last_git_commit
+    CHANGELOG_MESSAGE = commit_message[:message]
+    
+    puts("#{CHANGELOG_MESSAGE}")
+  end
+
+  # Private Lane - Send succesfully completed upload message into slack
+  private_lane :slack_message_success do
+    current_build_number = `bash ../../scripts/get_build_version.sh`
+    current_marketing_version = `bash ../../scripts/get_marketing_version.sh`
+    
+    slack(
+      message: "Successfully distributed 🤖 version #{current_marketing_version}+#{current_build_number}",
+      success: true,
+      slack_url: SLACK_HOOK_URL
+    )
+  end
+    
+  # Private Lane - Send error message due uncompleted upload app version into slack
+  private_lane :slack_message_error do |values|
+    exception = values[:exception]
+    current_build_number = `bash ../../scripts/get_build_version.sh`
+    current_marketing_version = `bash ../../scripts/get_marketing_version.sh`
+
+    slack(
+        message: "Error trying distributed 🤖 version #{current_marketing_version}+#{current_build_number}",
+        success: false,
+        slack_url: SLACK_HOOK_URL,
+        attachment_properties: {
+            fields: [
+                {
+                    title: "Error message",
+                    value: exception
+                }
+            ]
+        }
+    )
+  end
+
+  # Private Lane - Commit Changes
+  desc "Commit Changes"
+  private_lane :commit_changes do
+    branch_name = git_branch
+    current_build_number = `bash ../../scripts/get_build_version.sh`
+    current_marketing_version = `bash ../../scripts/get_marketing_version.sh`
+
+    git_commit(
+      path: ["../"],
+      message: "Fastlane: Upload development app 🤖 version #{current_marketing_version}+#{current_build_number}"
+    )
+
+    push_to_git_remote(
+      remote: "origin",
+      local_branch: "HEAD",
+      remote_branch: branch_name,
+      tags: false,
+    )
+  end
+
+  # ==============
+  # PRE-REQUISITES
+  # ==============
+
+  # Pre-requisites (before_all)
+  before_all do
+    setup_variables
+  end
+
+  # ============
+  # PUBLIC LANES
+  # ============
+
+  # Public Lane - Development pipeline (signed)
+  desc "Pipeline for building and uploading to Google PLay using development environment"
+  lane :pipeline_build_upload_dev do
+    begin
+      get_latest_commit_local
+      build_sign development_mode:true
+      upload_google_play_store
+      slack_message_success
+      commit_changes
+    rescue => exception
+      slack_message_error exception:exception
+    end
+  end
+
+  # Public Lane - Build the app (signed)
+  desc "Build the app (signed)"
+  lane :build_sign do |options|
+    development_mode = options[:development_mode] || false
+
+    sh "bash ../../scripts/bump_build_version.sh"
+
+    begin
+      sh "flutter build appbundle --release --dart-define-from-file=.env/secrets.json -t lib/main.dart"
+    rescue => exception
+      UI.message("Error building flutter version probably due not installed flutter, more details: #{exception}")
+      sh "fvm flutter build appbundle --release --dart-define-from-file=.env/secrets.json -t lib/main.dart"
+    end
+  end
+  
+  # Public Lane - Upload to Google Play Store
+  desc "Upload to Google Play Store"
+  lane :upload_google_play_store do
+    # AAB Route
+    aab_path = "../build/app/outputs/bundle/release/app-release.aab"
+    
+    # https://docs.fastlane.tools/actions/supply/
+    supply(
+      json_key_data: GOOGLE_STORE_AUTH_CREDENTIALS,
+      aab: aab_path,
+      track: "internal",
+      release_status: "completed",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_changelogs: true,
+      skip_upload_screenshots: true
+    )
+
+    # Clean
+    gradle(task: "clean")
+    sh "rm -rf ../build"
+  end
+end
