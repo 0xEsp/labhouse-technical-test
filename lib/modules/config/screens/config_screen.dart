@@ -10,15 +10,9 @@ import 'package:lab_house/modules/config/components/settings_tile.dart';
 import 'package:lab_house/modules/config/model/app_language.m.dart';
 import 'package:lab_house/modules/config/model/app_theme_mode.m.dart';
 
-class ConfigScreen extends StatefulWidget {
+class ConfigScreen extends StatelessWidget with LocaleManager, NavigationManager {
   const ConfigScreen({super.key});
 
-  @override
-  State<ConfigScreen> createState() => _ConfigScreenState();
-}
-
-class _ConfigScreenState extends State<ConfigScreen>
-    with LocaleManager, NavigationManager {
   // MARK: - Build
 
   @override

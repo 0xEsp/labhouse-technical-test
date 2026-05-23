@@ -17,12 +17,17 @@ class SettingsState extends Equatable {
 
   // MARK: - Computed
 
-  /// Obfuscated API key for display: only the last 3 characters are revealed.
-  /// Returns an empty string when no key is configured.
+  /// Obfuscated API key for display. We first trim to the last 10 characters
+  /// so the rendered text never grows too large (the leading part is
+  /// irrelevant once masked), then reveal only the last 3 — the rest are `*`.
   String get maskedApiKey {
-    if (apiKey.length <= 3) return apiKey;
+    if (apiKey.isEmpty) return apiKey;
 
-    return '${'*' * (apiKey.length - 3)}${apiKey.lastChars(3)}';
+    final trimmed = apiKey.length <= 10 ? apiKey : apiKey.lastChars(10);
+
+    if (trimmed.length <= 3) return trimmed;
+
+    return '${'*' * (trimmed.length - 3)}${trimmed.lastChars(3)}';
   }
 
   bool get hasApiKey => apiKey.isNotEmpty;
