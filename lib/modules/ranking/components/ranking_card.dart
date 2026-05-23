@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:lab_house/common/presentation/loading/shimmer.dart';
 import 'package:lab_house/core/managers/locale_manager.dart';
 import 'package:lab_house/extensions/theme/labhouse_theme.dart';
+import 'package:lab_house/modules/ranking/components/ranking_image_fallback.dart';
 import 'package:lab_house/modules/ranking/model/ranking.m.dart';
 
 class RankingCard extends StatelessWidget with LocaleManager {
@@ -43,7 +44,7 @@ class RankingCard extends StatelessWidget with LocaleManager {
                   fit: BoxFit.cover,
                   placeholder: (_, _) =>
                       ColoredBox(color: JGColors.primaryGrey20),
-                  errorWidget: (_, _, _) => _fallbackCover(),
+                  errorWidget: (_, _, _) => const RankingCoverFallback(),
                 ),
                 const DecoratedBox(
                   decoration: BoxDecoration(
@@ -95,19 +96,6 @@ class RankingCard extends StatelessWidget with LocaleManager {
   }
 
   // MARK: - Private Methods
-
-  Widget _fallbackCover() => DecoratedBox(
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [JGColors.primaryTurquoise, JGColors.primaryBlue],
-      ),
-    ),
-    child: const Center(
-      child: Icon(Icons.leaderboard_rounded, color: Colors.white70, size: 56),
-    ),
-  );
 
   Widget _chip(IconData icon, String label) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),

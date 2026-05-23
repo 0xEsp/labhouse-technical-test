@@ -19,7 +19,7 @@ class MultilineTextField extends StatefulWidget {
   final String? placeholder;
 
   /// TextField default background color
-  final Color color;
+  final Color? color;
 
   /// Set leading icon inside TextField
   final Widget? prefixIcon;
@@ -46,7 +46,7 @@ class MultilineTextField extends StatefulWidget {
     this.mandatory = false,
     this.controller,
     this.placeholder,
-    this.color = Colors.white,
+    this.color,
     this.prefixIcon,
     this.suffixIcon,
     this.maxLimit,
@@ -96,7 +96,10 @@ class _MultilineTextFieldState extends State<MultilineTextField>
       key: widget.fieldKey,
       decoration: _decoration(),
       controller: widget.controller,
-      style: LabhouseTextTheme.regular(size: 16, color: JGColors.nightAtDisco),
+      style: LabhouseTextTheme.regular(
+        size: 16,
+        color: JGColors.onSurface(context),
+      ),
       focusNode: widget.focusNode,
       autocorrect: false,
       enableInteractiveSelection: false,

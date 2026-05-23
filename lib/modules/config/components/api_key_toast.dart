@@ -37,7 +37,7 @@ class ApiKeyToast extends StatelessWidget with LocaleManager {
           Text(
             lc.settings_api_key,
             style: LabhouseTextTheme.semibold(
-              color: JGColors.nightAtDisco,
+              color: JGColors.onSurface(context),
               size: 22,
             ),
           ),
@@ -54,7 +54,7 @@ class ApiKeyToast extends StatelessWidget with LocaleManager {
             hasApiKey ? maskedApiKey : lc.api_key_empty,
             style: LabhouseTextTheme.semibold(
               size: 16,
-              color: JGColors.nightAtDisco,
+              color: JGColors.onSurface(context),
             ),
           ),
           const SizedBox(height: 20),

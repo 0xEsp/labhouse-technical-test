@@ -102,10 +102,18 @@ class RankingScreen extends StatelessWidget
   }
 
   void _openSearch(BuildContext context) {
+    final bloc = context.read<RankingBloc>();
+    final countBefore = bloc.state.rankings.length;
+
     toast(
       context,
       handleKeyboard: true,
       enableDrag: false,
+      onDismiss: (_) {
+        if (bloc.state.rankings.length > countBefore) {
+          _openDetail(context, bloc.state.rankings.last);
+        }
+      },
       child: SearchRankingToast(),
     );
   }

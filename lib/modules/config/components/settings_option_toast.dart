@@ -49,7 +49,7 @@ class _SettingsOptionToastState<T> extends State<SettingsOptionToast<T>> {
         Text(
           widget.title,
           style: LabhouseTextTheme.semibold(
-            color: JGColors.nightAtDisco,
+            color: JGColors.onSurface(context),
             size: 22,
           ),
         ),
@@ -92,7 +92,7 @@ class _SettingsOptionToastState<T> extends State<SettingsOptionToast<T>> {
               option.label,
               style: LabhouseTextTheme.medium(
                 size: 16,
-                color: JGColors.nightAtDisco,
+                color: JGColors.onSurface(context),
               ),
             ),
           ],

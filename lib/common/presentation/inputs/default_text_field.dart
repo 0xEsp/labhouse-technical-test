@@ -119,7 +119,10 @@ class _DefaultTextFieldState extends State<DefaultTextField>
       key: widget.fieldKey,
       controller: widget.controller,
       decoration: _decoration(),
-      style: LabhouseTextTheme.regular(size: 16, color: JGColors.nightAtDisco),
+      style: LabhouseTextTheme.regular(
+        size: 16,
+        color: JGColors.onSurface(context),
+      ),
       focusNode: widget.focusNode,
       autocorrect: false,
       obscureText: widget.obscureText,

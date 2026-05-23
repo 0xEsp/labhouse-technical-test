@@ -50,4 +50,14 @@ extension JGColors on Colors {
 
   /// Primary text/icon color on dark surfaces.
   static Color get darkOnSurface => const Color(0xFFE6E6E6);
+
+  // MARK: - Theme-aware helpers
+
+  static Color onSurface(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+      ? darkOnSurface
+      : nightAtDisco;
+
+  static Color surface(BuildContext context) =>
+      Theme.of(context).cardTheme.color ?? primaryWhite;
 }

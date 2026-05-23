@@ -12,10 +12,10 @@ extension LabhouseElevatedButtonTheme on ElevatedButtonThemeData {
       }),
       backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
         if (states.contains(WidgetState.disabled)) {
-          return JGColors.primaryPurple.withValues(alpha: .3);
+          return JGColors.primaryTurquoise.withValues(alpha: .3);
         }
 
-        return JGColors.primaryPurple;
+        return JGColors.primaryTurquoise;
       }),
       padding: WidgetStateProperty.all(const EdgeInsets.all(16)),
       minimumSize: WidgetStateProperty.all(const Size(double.minPositive, 55)),
@@ -31,7 +31,7 @@ extension LabhouseElevatedButtonTheme on ElevatedButtonThemeData {
   static ElevatedButtonThemeData get whiteMain => ElevatedButtonThemeData(
     style: main.style?.copyWith(
       foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
-        return JGColors.primaryPurple;
+        return JGColors.primaryTurquoise;
       }),
       backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
         if (states.contains(WidgetState.disabled)) {

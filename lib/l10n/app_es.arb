@@ -53,5 +53,23 @@
         "type": "int"
       }
     }
-  }
+  },
+  "ranking_query_too_long": "Máximo {count} caracteres",
+  "@ranking_query_too_long": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ranking_reviews_count": "{count} reseñas",
+  "@ranking_reviews_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ranking_articles_section": "Artículos",
+  "@ranking_articles_section": {}
 }

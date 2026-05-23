@@ -30,7 +30,7 @@ class SheetSkeleton extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        color: JGColors.primaryWhite,
+        color: JGColors.surface(context),
       ),
       width: double.infinity,
       child: SafeArea(top: false, bottom: bottomSafeArea, child: content),

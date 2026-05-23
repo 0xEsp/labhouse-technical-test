@@ -28,7 +28,7 @@ class ToastSkeleton extends StatelessWidget {
               ? const EdgeInsets.symmetric(horizontal: 16, vertical: 24)
               : null,
           decoration: BoxDecoration(
-            color: JGColors.primaryWhite,
+            color: JGColors.surface(context),
             borderRadius: BorderRadius.circular(24),
           ),
           width: double.infinity,

@@ -17,6 +17,7 @@ extension LabhouseTheme on ThemeData {
     highlightColor: JGColors.neutralOriginal.withValues(alpha: .3),
     focusColor: Colors.transparent,
     colorScheme: ColorScheme.fromSwatch().copyWith(
+      primary: JGColors.primaryTurquoise,
       secondary: Colors.transparent,
     ),
     scaffoldBackgroundColor: JGColors.primaryWhite,
@@ -34,9 +35,9 @@ extension LabhouseTheme on ThemeData {
     focusColor: Colors.transparent,
     colorScheme: ColorScheme.fromSwatch(
       brightness: Brightness.dark,
-    ).copyWith(secondary: Colors.transparent),
+    ).copyWith(primary: JGColors.primaryTurquoise, secondary: Colors.transparent),
     scaffoldBackgroundColor: JGColors.darkBackground,
-    inputDecorationTheme: LabhouseInputTheme.base,
+    inputDecorationTheme: LabhouseInputTheme.dark,
     appBarTheme: LabhouseAppBarTheme.dark,
     bottomSheetTheme: LabhouseBottomSheetTheme.main,
     cardTheme: LabhouseCardTheme.dark.data,

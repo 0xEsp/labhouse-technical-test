@@ -7,7 +7,7 @@ import 'package:lab_house/modules/config/model/app_theme_mode.m.dart';
 class AppSettingsManager extends ChangeNotifier {
   // MARK: - Properties
 
-  AppThemeMode _themeMode = AppThemeMode.light;
+  AppThemeMode _themeMode = AppThemeMode.systemDefault;
   AppLanguage _language = AppLanguage.systemDefault;
 
   AppThemeMode get themeMode => _themeMode;

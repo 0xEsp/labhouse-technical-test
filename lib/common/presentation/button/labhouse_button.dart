@@ -12,6 +12,7 @@ class LabhouseButton extends StatelessWidget {
   final bool textCenter;
   final TextStyle? textStyle;
   final bool useAutoWidth;
+  final bool loading;
   final Function()? onPressed;
 
   const LabhouseButton({
@@ -23,6 +24,7 @@ class LabhouseButton extends StatelessWidget {
     this.textCenter = true,
     this.textStyle,
     this.useAutoWidth = false,
+    this.loading = false,
     required this.onPressed,
   }) : assert(
          !useAutoWidth || !textCenter,
@@ -39,39 +41,52 @@ class LabhouseButton extends StatelessWidget {
           textStyle ?? style.textStyle ?? LabhouseTextTheme.semibold(size: 18),
     );
     final button = TapDebouncer(
-      onTap: onPressed == null
+      onTap: (onPressed == null || loading)
           ? null
           : () async {
               HapticFeedback.mediumImpact();
               onPressed!();
             },
       builder: (_, onTap) => ElevatedButton(
-        onPressed: onPressed == null ? onTap : (onTap ?? () {}),
+        onPressed: loading
+            ? () {}
+            : (onPressed == null ? onTap : (onTap ?? () {})),
         style: style.theme,
-        child: Row(
-          mainAxisSize: useAutoWidth ? MainAxisSize.min : MainAxisSize.max,
-          children: [
-            if (leadingIcon != null) ...{
-              Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: leadingIcon!,
+        child: loading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: Colors.white,
+                ),
+              )
+            : Row(
+                mainAxisSize: useAutoWidth
+                    ? MainAxisSize.min
+                    : MainAxisSize.max,
+                children: [
+                  if (leadingIcon != null) ...{
+                    Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: leadingIcon!,
+                    ),
+                  } else if (trailingIcon != null && textCenter) ...{
+                    const SizedBox(height: 24, width: 24),
+                  },
+                  Flexible(
+                    child: textCenter ? Center(child: textWidget) : textWidget,
+                  ),
+                  if (trailingIcon != null) ...{
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6),
+                      child: trailingIcon!,
+                    ),
+                  } else if (leadingIcon != null && textCenter) ...{
+                    const SizedBox(height: 24, width: 24),
+                  },
+                ],
               ),
-            } else if (trailingIcon != null && textCenter) ...{
-              const SizedBox(height: 24, width: 24),
-            },
-            Flexible(
-              child: textCenter ? Center(child: textWidget) : textWidget,
-            ),
-            if (trailingIcon != null) ...{
-              Padding(
-                padding: const EdgeInsets.only(left: 6),
-                child: trailingIcon!,
-              ),
-            } else if (leadingIcon != null && textCenter) ...{
-              const SizedBox(height: 24, width: 24),
-            },
-          ],
-        ),
       ),
     );
 

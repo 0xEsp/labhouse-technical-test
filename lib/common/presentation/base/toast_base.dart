@@ -29,7 +29,7 @@ class ToastBase extends StatelessWidget with LocaleManager {
             Text(
               lc.a_problem_has_appear,
               style: LabhouseTextTheme.semibold(
-                color: JGColors.nightAtDisco,
+                color: JGColors.onSurface(context),
                 size: 22,
               ),
             ),

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 enum AppThemeMode {
@@ -14,11 +16,16 @@ enum AppThemeMode {
   static AppThemeMode fromName(String? name) {
     return AppThemeMode.values.firstWhere(
       (mode) => mode.name == name,
-      orElse: () => AppThemeMode.light,
+      orElse: () => AppThemeMode.systemDefault,
     );
   }
 
   static AppThemeMode fromThemeMode(ThemeMode mode) {
     return mode == ThemeMode.dark ? AppThemeMode.dark : AppThemeMode.light;
   }
+
+  static AppThemeMode get systemDefault =>
+      PlatformDispatcher.instance.platformBrightness == Brightness.dark
+      ? AppThemeMode.dark
+      : AppThemeMode.light;
 }
