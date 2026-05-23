@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lab_house/assembly/assembly.dart';
 import 'package:lab_house/core/api/model/openai_model.m.dart';
+import 'package:lab_house/modules/ranking/model/ranking.m.dart';
 import 'package:lab_house/modules/ranking/usecases/generate_ranking_usecase.dart';
 import 'package:lab_house/modules/ranking/usecases/get_rankings_usecase.dart';
 
@@ -17,36 +17,48 @@ class RankingBloc extends Bloc<RankingEvent, RankingState> {
 
   // MARK: - Lifecycle
 
-  RankingBloc() : super(RankingInitial()) {
-    on<RankingGeneration>(_generateRanking);
+  RankingBloc() : super(const RankingState(isListLoading: true)) {
     on<RankingFetch>(_fetchRankings);
+    on<RankingGeneration>(_generateRanking);
   }
 
   // MARK: - Events Methods
 
-  void _generateRanking(
+  Future<void> _fetchRankings(
+    RankingFetch event,
+    Emitter<RankingState> emit,
+  ) async {
+    emit(state.copyWith(isListLoading: true));
+
+    try {
+      final rankings = await _getRankingsUseCase.execute();
+
+      emit(state.copyWith(rankings: rankings, isListLoading: false));
+    } catch (_) {
+      emit(state.copyWith(isListLoading: false));
+    }
+  }
+
+  Future<void> _generateRanking(
     RankingGeneration event,
     Emitter<RankingState> emit,
   ) async {
+    emit(state.copyWith(isGenerating: true));
+
     try {
       final ranking = await _generateRankingUseCase.execute(
         query: event.query,
         model: event.model,
       );
 
-      debugPrint('TODO FUE BIEN; $ranking');
-    } catch (error) {
-      debugPrint('ALGO MALO PASO; $error');
-    }
-  }
-
-  void _fetchRankings(RankingFetch event, Emitter<RankingState> emit) async {
-    try {
-      final rankings = await _getRankingsUseCase.execute();
-
-      debugPrint('RANKINGS EN DB (${rankings.length}); $rankings');
-    } catch (error) {
-      debugPrint('ALGO MALO PASO; $error');
+      emit(
+        state.copyWith(
+          rankings: [...state.rankings, ranking],
+          isGenerating: false,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(isGenerating: false));
     }
   }
 }

@@ -39,5 +39,19 @@
   "api_key_empty": "No hay ninguna API Key configurada",
   "@api_key_empty": {},
   "api_key_input_placeholder": "Introduce una nueva API Key",
-  "@api_key_input_placeholder": {}
+  "@api_key_input_placeholder": {},
+  "rankings_empty": "Aún no tienes rankings",
+  "@rankings_empty": {},
+  "new_ranking_title": "Nuevo ranking",
+  "@new_ranking_title": {},
+  "new_ranking_placeholder": "Pregunta a la IA por un ranking",
+  "@new_ranking_placeholder": {},
+  "ranking_articles_count": "{count} artículos",
+  "@ranking_articles_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

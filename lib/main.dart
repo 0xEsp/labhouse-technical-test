@@ -18,7 +18,7 @@ Future<void> main() async {
       providers: [
         BlocProvider(create: (_) => BaseBloc()),
         BlocProvider(create: (_) => HomeCubit()),
-        BlocProvider(create: (_) => RankingBloc()),
+        BlocProvider(create: (_) => RankingBloc()..add(RankingFetch())),
         BlocProvider(create: (_) => SettingsCubit()),
       ],
       child: LabhouseApp(),

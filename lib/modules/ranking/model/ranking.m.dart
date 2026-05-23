@@ -6,6 +6,7 @@ class Ranking extends Equatable {
   final RankingProvider provider;
   final int comments;
   final List<RankingArticle> articles;
+  final DateTime createdAt;
 
   const Ranking({
     required this.topicImageUrl,
@@ -14,7 +15,11 @@ class Ranking extends Equatable {
     required this.provider,
     required this.comments,
     required this.articles,
+    required this.createdAt,
   });
+
+  /// Number of ranked items, surfaced for the list cell.
+  int get articlesCount => articles.length;
 
   factory Ranking.fromDTO(RankingDTO dto) => Ranking(
     topicImageUrl: dto.topicImage,
@@ -23,6 +28,7 @@ class Ranking extends Equatable {
     provider: RankingProvider.fromDTO(dto.provider),
     comments: dto.comments,
     articles: dto.articles.map(RankingArticle.fromDTO).toList(),
+    createdAt: dto.createdAt,
   );
 
   @override
@@ -33,6 +39,7 @@ class Ranking extends Equatable {
     provider,
     comments,
     articles,
+    createdAt,
   ];
 }
 

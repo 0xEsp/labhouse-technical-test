@@ -9,6 +9,9 @@ class RankingDTO {
   @JsonKey(includeFromJson: false)
   Id id = Isar.autoIncrement;
 
+  @JsonKey(includeFromJson: false)
+  DateTime createdAt = DateTime.now();
+
   final String topicImage, topicName, topicDescription;
   final RankingProviderDTO provider;
   final int comments;

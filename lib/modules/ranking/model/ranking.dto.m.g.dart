@@ -25,25 +25,30 @@ const RankingDTOSchema = CollectionSchema(
       target: r'RankingArticleDTO',
     ),
     r'comments': PropertySchema(id: 1, name: r'comments', type: IsarType.long),
-    r'provider': PropertySchema(
+    r'createdAt': PropertySchema(
       id: 2,
+      name: r'createdAt',
+      type: IsarType.dateTime,
+    ),
+    r'provider': PropertySchema(
+      id: 3,
       name: r'provider',
       type: IsarType.object,
 
       target: r'RankingProviderDTO',
     ),
     r'topicDescription': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'topicDescription',
       type: IsarType.string,
     ),
     r'topicImage': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'topicImage',
       type: IsarType.string,
     ),
     r'topicName': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'topicName',
       type: IsarType.string,
     ),
@@ -112,15 +117,16 @@ void _rankingDTOSerialize(
     object.articles,
   );
   writer.writeLong(offsets[1], object.comments);
+  writer.writeDateTime(offsets[2], object.createdAt);
   writer.writeObject<RankingProviderDTO>(
-    offsets[2],
+    offsets[3],
     allOffsets,
     RankingProviderDTOSchema.serialize,
     object.provider,
   );
-  writer.writeString(offsets[3], object.topicDescription);
-  writer.writeString(offsets[4], object.topicImage);
-  writer.writeString(offsets[5], object.topicName);
+  writer.writeString(offsets[4], object.topicDescription);
+  writer.writeString(offsets[5], object.topicImage);
+  writer.writeString(offsets[6], object.topicName);
 }
 
 RankingDTO _rankingDTODeserialize(
@@ -141,15 +147,16 @@ RankingDTO _rankingDTODeserialize(
     comments: reader.readLong(offsets[1]),
     provider:
         reader.readObjectOrNull<RankingProviderDTO>(
-          offsets[2],
+          offsets[3],
           RankingProviderDTOSchema.deserialize,
           allOffsets,
         ) ??
         RankingProviderDTO(),
-    topicDescription: reader.readString(offsets[3]),
-    topicImage: reader.readString(offsets[4]),
-    topicName: reader.readString(offsets[5]),
+    topicDescription: reader.readString(offsets[4]),
+    topicImage: reader.readString(offsets[5]),
+    topicName: reader.readString(offsets[6]),
   );
+  object.createdAt = reader.readDateTime(offsets[2]);
   object.id = id;
   return object;
 }
@@ -173,6 +180,8 @@ P _rankingDTODeserializeProp<P>(
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
+      return (reader.readDateTime(offset)) as P;
+    case 3:
       return (reader.readObjectOrNull<RankingProviderDTO>(
                 offset,
                 RankingProviderDTOSchema.deserialize,
@@ -180,11 +189,11 @@ P _rankingDTODeserializeProp<P>(
               ) ??
               RankingProviderDTO())
           as P;
-    case 3:
-      return (reader.readString(offset)) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -386,6 +395,63 @@ extension RankingDTOQueryFilter
       return query.addFilterCondition(
         FilterCondition.between(
           property: r'comments',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<RankingDTO, RankingDTO, QAfterFilterCondition> createdAtEqualTo(
+    DateTime value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'createdAt', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<RankingDTO, RankingDTO, QAfterFilterCondition>
+  createdAtGreaterThan(DateTime value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'createdAt',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<RankingDTO, RankingDTO, QAfterFilterCondition> createdAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'createdAt',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<RankingDTO, RankingDTO, QAfterFilterCondition> createdAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'createdAt',
           lower: lower,
           includeLower: includeLower,
           upper: upper,
@@ -923,6 +989,18 @@ extension RankingDTOQuerySortBy
     });
   }
 
+  QueryBuilder<RankingDTO, RankingDTO, QAfterSortBy> sortByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<RankingDTO, RankingDTO, QAfterSortBy> sortByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
+    });
+  }
+
   QueryBuilder<RankingDTO, RankingDTO, QAfterSortBy> sortByTopicDescription() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'topicDescription', Sort.asc);
@@ -972,6 +1050,18 @@ extension RankingDTOQuerySortThenBy
   QueryBuilder<RankingDTO, RankingDTO, QAfterSortBy> thenByCommentsDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'comments', Sort.desc);
+    });
+  }
+
+  QueryBuilder<RankingDTO, RankingDTO, QAfterSortBy> thenByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<RankingDTO, RankingDTO, QAfterSortBy> thenByCreatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'createdAt', Sort.desc);
     });
   }
 
@@ -1033,6 +1123,12 @@ extension RankingDTOQueryWhereDistinct
     });
   }
 
+  QueryBuilder<RankingDTO, RankingDTO, QDistinct> distinctByCreatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'createdAt');
+    });
+  }
+
   QueryBuilder<RankingDTO, RankingDTO, QDistinct> distinctByTopicDescription({
     bool caseSensitive = true,
   }) {
@@ -1079,6 +1175,12 @@ extension RankingDTOQueryProperty
   QueryBuilder<RankingDTO, int, QQueryOperations> commentsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'comments');
+    });
+  }
+
+  QueryBuilder<RankingDTO, DateTime, QQueryOperations> createdAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'createdAt');
     });
   }
 

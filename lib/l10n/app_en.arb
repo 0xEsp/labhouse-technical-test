@@ -19,5 +19,9 @@
   "language_spanish": "Español",
   "api_key_current_label": "Current API Key",
   "api_key_empty": "No API Key configured",
-  "api_key_input_placeholder": "Enter a new API Key"
+  "api_key_input_placeholder": "Enter a new API Key",
+  "rankings_empty": "You don't have any rankings yet",
+  "new_ranking_title": "New ranking",
+  "new_ranking_placeholder": "Ask the AI for a ranking",
+  "ranking_articles_count": "{count} articles"
 }

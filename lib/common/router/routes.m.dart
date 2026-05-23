@@ -1,5 +1,6 @@
 enum Routes {
-  home('/home');
+  home('/home'),
+  rankingDetail('/ranking-detail');
 
   final String path;
 
