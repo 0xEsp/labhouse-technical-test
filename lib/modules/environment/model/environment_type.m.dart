@@ -6,6 +6,6 @@ enum EnvironmentType {
   Color envColor() => Colors.cyan;
 
   String baseUrl() => switch (this) {
-    EnvironmentType.technical => 'https://mybackend.com',
+    EnvironmentType.technical => 'https://api.openai.com',
   };
 }

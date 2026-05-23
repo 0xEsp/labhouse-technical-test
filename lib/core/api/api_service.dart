@@ -26,7 +26,8 @@ final class ApiServiceDefault implements ApiService {
   late final Dio _dio = container.get<Dio>()
     ..options = BaseOptions(
       baseUrl: _envUrl,
-      validateStatus: (status) => status != null && status < 500,
+      validateStatus: (status) =>
+          status != null && status >= 200 && status < 300,
       connectTimeout: const Duration(seconds: 5),
       receiveTimeout: const Duration(seconds: kDebugMode ? 1800 : 5),
       preserveHeaderCase: true,
@@ -62,15 +63,23 @@ final class ApiServiceDefault implements ApiService {
         options: Options(method: method.name.toUpperCase(), headers: headers),
       );
 
-      final arp = ARP<T>.fromJson(
-        response.data,
-        fromJsonT: resultParser == null ? null : (json) => resultParser(json),
-      );
+      final data = response.data;
+      if (retrieveFullResponse || resultParser == null) return data as T;
 
-      return retrieveFullResponse ? arp as T : arp.data as T;
+      return resultParser(data);
     } on ARPError {
       rethrow;
     } on DioException catch (dioError) {
+      final data = dioError.response?.data;
+
+      if (data is Map<String, dynamic> &&
+          data['error'] is Map<String, dynamic>) {
+        throw Utils.mapOpenAIErrorToARPError(
+          dioError.response?.statusCode,
+          data['error'] as Map<String, dynamic>,
+        );
+      }
+
       final error = dioError.error;
       if (error is! ARPError) throw Utils.mapDioExceptionToARPError(dioError);
       throw error;
@@ -84,11 +93,23 @@ final class ApiServiceDefault implements ApiService {
     _dio.options.baseUrl = newUrl;
   }
 
+  // MARK: - Private Methods
+
   Future<Map<String, String?>> _loadRequestHeaders(
     Map<String, String?>? extraHeaders,
   ) async {
+    _headers['Authorization'] = _retrieveAuthToken();
+
     final headers = Map<String, String?>.of(_headers);
     extraHeaders?.forEach((key, value) => headers[key] = value);
     return headers;
+  }
+
+  /// Bearer token for OpenAI, resolved from [SecretsManager] (secure storage
+  /// override, falling back to the compile-time `OPENAI_API_KEY`).
+  String _retrieveAuthToken() {
+    final apiKey = container.get<SecretsManager>().get(Secret.openaiApiKey);
+
+    return 'Bearer $apiKey';
   }
 }

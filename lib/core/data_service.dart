@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:lab_house/assembly/assembly.dart';
-import 'package:lab_house/modules/environment/shared/environment.dart';
 import 'package:lab_house/common/utils.dart';
 import 'package:lab_house/core/api/api_client_adapter.dart';
-import 'package:lab_house/core/api/model/api_response.m.dart';
 import 'package:lab_house/core/api/model/api_response_error.m.dart';
+import 'package:lab_house/core/managers/secrets_manager.dart';
+import 'package:lab_house/modules/environment/shared/environment.dart';
 
 part 'api/model/api_endpoint.m.dart';
 part 'api/model/http_method.m.dart';
