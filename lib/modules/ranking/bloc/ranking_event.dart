@@ -8,13 +8,12 @@ sealed class RankingEvent extends Equatable {
 }
 
 final class RankingGeneration extends RankingEvent {
-  final String query;
-  final OpenAIModel model;
+  final RankingGenerationInput input;
 
-  const RankingGeneration({required this.query, required this.model});
+  const RankingGeneration(this.input);
 
   @override
-  List<Object> get props => [query, model];
+  List<Object> get props => [input];
 }
 
 final class RankingFetch extends RankingEvent {}

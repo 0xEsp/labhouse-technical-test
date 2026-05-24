@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lab_house/assembly/assembly.dart';
 import 'package:lab_house/core/api/model/api_response_error.m.dart';
-import 'package:lab_house/core/api/model/openai_model.m.dart';
 import 'package:lab_house/modules/ranking/model/ranking.m.dart';
+import 'package:lab_house/modules/ranking/model/ranking_generation_input.m.dart';
 import 'package:lab_house/modules/ranking/usecases/delete_ranking_usecase.dart';
 import 'package:lab_house/modules/ranking/usecases/generate_ranking_usecase.dart';
 import 'package:lab_house/modules/ranking/usecases/get_rankings_usecase.dart';
@@ -50,10 +50,7 @@ class RankingBloc extends Bloc<RankingEvent, RankingState> {
     emit(state.copyWith(isGenerating: true, clearError: true));
 
     try {
-      final ranking = await _generateRankingUseCase.execute(
-        query: event.query,
-        model: event.model,
-      );
+      final ranking = await _generateRankingUseCase.execute(event.input);
 
       emit(
         state.copyWith(

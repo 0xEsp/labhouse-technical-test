@@ -13,6 +13,7 @@ class GetRankingsUseCaseDefault with DataService implements GetRankingsUseCase {
   Future<List<Ranking>> execute() async {
     final dtos = await getAll<RankingDTO>();
 
-    return dtos.map(Ranking.fromDTO).toList();
+    return dtos.map(Ranking.fromDTO).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 }

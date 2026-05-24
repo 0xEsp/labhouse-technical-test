@@ -74,6 +74,8 @@
   "@ranking_articles_section": {},
   "new_ranking_model_label": "Modelo",
   "@new_ranking_model_label": {},
+  "new_ranking_web_search": "Búsqueda web",
+  "@new_ranking_web_search": {},
   "error_invalid_api_key": "Tu API key de OpenAI no es válida. Revísala en los ajustes.",
   "@error_invalid_api_key": {},
   "error_insufficient_quota": "No tienes crédito suficiente en tu cuenta de OpenAI.",

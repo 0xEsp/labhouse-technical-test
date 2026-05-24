@@ -7,12 +7,14 @@ import 'package:lab_house/core/api/model/openai_model.m.dart';
 import 'package:lab_house/core/managers/locale_manager.dart';
 import 'package:lab_house/extensions/theme/labhouse_theme.dart';
 import 'package:lab_house/modules/ranking/bloc/ranking_bloc.dart';
+import 'package:lab_house/modules/ranking/model/ranking_generation_input.m.dart';
 
 class SearchRankingToast extends StatelessWidget with LocaleManager {
   SearchRankingToast({super.key});
 
   final _fieldKey = GlobalKey<FormFieldState>();
   final _model = ValueNotifier<OpenAIModel>(OpenAIModel.defaultModel);
+  final _webSearch = ValueNotifier<bool>(false);
   static const rankingQueryMaxLength = 200;
 
   @override
@@ -49,6 +51,8 @@ class SearchRankingToast extends StatelessWidget with LocaleManager {
                 ),
                 const SizedBox(height: 8),
                 _modelPicker(context),
+                const SizedBox(height: 16),
+                _webSearchToggle(context),
                 const SizedBox(height: 24),
                 MultilineTextField(
                   fieldKey: _fieldKey,
@@ -112,6 +116,39 @@ class SearchRankingToast extends StatelessWidget with LocaleManager {
     );
   }
 
+  Widget _webSearchToggle(BuildContext context) {
+    final lc = locale(context);
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: _webSearch,
+      builder: (context, enabled, _) => GestureDetector(
+        onTap: () => _webSearch.value = !enabled,
+        behavior: HitTestBehavior.opaque,
+        child: Row(
+          children: [
+            Icon(
+              enabled
+                  ? Icons.check_box_rounded
+                  : Icons.check_box_outline_blank_rounded,
+              color: enabled
+                  ? JGColors.primaryTurquoise
+                  : JGColors.primaryGrey50,
+              size: 22,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              lc.new_ranking_web_search,
+              style: LabhouseTextTheme.medium(
+                size: 14,
+                color: JGColors.onSurface(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   String? _validate(BuildContext context, String? value) {
     final lc = locale(context);
     final text = value?.trim() ?? '';
@@ -130,7 +167,13 @@ class SearchRankingToast extends StatelessWidget with LocaleManager {
     final query = (_fieldKey.currentState?.value as String?)?.trim() ?? '';
 
     context.read<RankingBloc>().add(
-      RankingGeneration(query: query, model: _model.value),
+      RankingGeneration(
+        RankingGenerationInput(
+          query: query,
+          model: _model.value,
+          webSearch: _webSearch.value,
+        ),
+      ),
     );
   }
 }

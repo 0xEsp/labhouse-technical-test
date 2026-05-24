@@ -28,6 +28,7 @@
   "ranking_reviews_count": "{count} reviews",
   "ranking_articles_section": "Articles",
   "new_ranking_model_label": "Model",
+  "new_ranking_web_search": "Web search",
   "error_invalid_api_key": "Your OpenAI API key is invalid. Check it in settings.",
   "error_insufficient_quota": "Your OpenAI account doesn't have enough credit.",
   "error_rate_limit": "Too many requests. Please try again in a moment.",

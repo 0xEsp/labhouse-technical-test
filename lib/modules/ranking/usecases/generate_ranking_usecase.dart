@@ -1,14 +1,15 @@
 import 'dart:convert';
 
 import 'package:lab_house/core/api/model/api_response_error.m.dart';
-import 'package:lab_house/core/api/model/openai_model.m.dart';
 import 'package:lab_house/core/api/prompt/prompts.dart';
+import 'package:lab_house/core/api/prompt/ranking.prompt.dart';
 import 'package:lab_house/core/data_service.dart';
 import 'package:lab_house/modules/ranking/model/ranking.dto.m.dart';
 import 'package:lab_house/modules/ranking/model/ranking.m.dart';
+import 'package:lab_house/modules/ranking/model/ranking_generation_input.m.dart';
 
 abstract class GenerateRankingUseCase {
-  Future<Ranking> execute({required String query, required OpenAIModel model});
+  Future<Ranking> execute(RankingGenerationInput input);
 }
 
 class GenerateRankingUseCaseDefault
@@ -17,20 +18,26 @@ class GenerateRankingUseCaseDefault
   // MARK: - Public Methods
 
   @override
-  Future<Ranking> execute({
-    required String query,
-    required OpenAIModel model,
-  }) async {
+  Future<Ranking> execute(RankingGenerationInput input) async {
     final RankingDTO dto = await request<RankingDTO>(
       path: ApiEndpoint.responses.path,
       method: HTTPMethod.post,
       body: {
-        'model': model.id,
+        'model': input.model.id,
         'instructions': Prompts.rankings.instruction,
-        'input': '$query\n\nReturn the response as a single JSON object.',
+        'input': input.query,
         'text': {
-          'format': {'type': 'json_object'},
+          'format': {
+            'type': 'json_schema',
+            'name': 'ranking',
+            'strict': true,
+            'schema': rankingResponseSchema,
+          },
         },
+        if (input.webSearch)
+          'tools': [
+            {'type': 'web_search_preview'},
+          ],
       },
       resultParser: _parseResponse,
     );
