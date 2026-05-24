@@ -18,10 +18,20 @@ class SettingsCubit extends Cubit<SettingsState> {
   final _changeThemeUseCase = container.get<ChangeThemeUseCase>();
   final _changeLanguageUseCase = container.get<ChangeLanguageUseCase>();
   final _saveApiKeyUseCase = container.get<SaveApiKeyUseCase>();
+  final _appSettings = container.get<AppSettingsManager>();
 
   // MARK: - Lifecycle
 
-  SettingsCubit() : super(_initialState());
+  SettingsCubit() : super(_initialState()) {
+    _appSettings.addListener(_syncFromSettings);
+  }
+
+  @override
+  Future<void> close() {
+    _appSettings.removeListener(_syncFromSettings);
+
+    return super.close();
+  }
 
   /// Seeds the UI from the live values already resolved at app load
   static SettingsState _initialState() {
@@ -37,21 +47,26 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   // MARK: - Public Methods
 
-  Future<void> changeTheme(AppThemeMode mode) async {
-    await _changeThemeUseCase.execute(mode);
+  Future<void> changeTheme(AppThemeMode mode) =>
+      _changeThemeUseCase.execute(mode);
 
-    emit(state.copyWith(themeMode: mode));
-  }
-
-  Future<void> changeLanguage(AppLanguage language) async {
-    await _changeLanguageUseCase.execute(language);
-
-    emit(state.copyWith(language: language));
-  }
+  Future<void> changeLanguage(AppLanguage language) =>
+      _changeLanguageUseCase.execute(language);
 
   Future<void> saveApiKey(String apiKey) async {
     await _saveApiKeyUseCase.execute(apiKey);
 
     emit(state.copyWith(apiKey: apiKey));
+  }
+
+  // MARK: - Private Methods
+
+  void _syncFromSettings() {
+    emit(
+      state.copyWith(
+        themeMode: _appSettings.themeMode,
+        language: _appSettings.language,
+      ),
+    );
   }
 }
