@@ -51,5 +51,8 @@ mixin DataService implements ApiService, LocalService {
   Future<List<T>> getAll<T>() => _local.getAll<T>();
 
   @override
+  Future<void> delete<T>(int id) => _local.delete<T>(id);
+
+  @override
   Future<void> clear<T>() => _local.clear<T>();
 }

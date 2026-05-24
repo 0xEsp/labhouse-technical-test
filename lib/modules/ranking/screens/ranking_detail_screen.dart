@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lab_house/core/managers/locale_manager.dart';
 import 'package:lab_house/extensions/theme/labhouse_theme.dart';
+import 'package:lab_house/modules/ranking/bloc/ranking_bloc.dart';
 import 'package:lab_house/modules/ranking/components/ranking_image_fallback.dart';
 import 'package:lab_house/modules/ranking/model/ranking.m.dart';
 
@@ -48,6 +50,13 @@ class RankingDetailScreen extends StatelessWidget with LocaleManager {
         icon: Icons.arrow_back_ios_new_rounded,
         onTap: () => Navigator.of(context).pop(),
       ),
+      actions: [
+        _circleButton(
+          context,
+          icon: Icons.delete_outline_rounded,
+          onTap: () => _deleteRanking(context),
+        ),
+      ],
       flexibleSpace: FlexibleSpaceBar(
         stretchModes: const [StretchMode.zoomBackground],
         background: Stack(
@@ -274,5 +283,11 @@ class RankingDetailScreen extends StatelessWidget with LocaleManager {
         ),
       ),
     );
+  }
+
+  void _deleteRanking(BuildContext context) {
+    context.read<RankingBloc>().add(RankingDeletion(ranking.id));
+
+    Navigator.of(context).pop();
   }
 }

@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:lab_house/modules/ranking/model/ranking.dto.m.dart';
 
 class Ranking extends Equatable {
+  final int id;
   final String topicImageUrl, topicName, topicDescription;
   final RankingProvider provider;
   final int comments;
@@ -9,6 +10,7 @@ class Ranking extends Equatable {
   final DateTime createdAt;
 
   const Ranking({
+    required this.id,
     required this.topicImageUrl,
     required this.topicName,
     required this.topicDescription,
@@ -22,17 +24,21 @@ class Ranking extends Equatable {
   int get articlesCount => articles.length;
 
   factory Ranking.fromDTO(RankingDTO dto) => Ranking(
+    id: dto.id,
     topicImageUrl: dto.topicImage,
     topicName: dto.topicName,
     topicDescription: dto.topicDescription,
     provider: RankingProvider.fromDTO(dto.provider),
     comments: dto.comments,
-    articles: dto.articles.map(RankingArticle.fromDTO).toList(),
+    articles:
+        dto.articles.map(RankingArticle.fromDTO).toList()
+          ..sort((a, b) => b.rating.value.compareTo(a.rating.value)),
     createdAt: dto.createdAt,
   );
 
   @override
   List<Object?> get props => [
+    id,
     topicImageUrl,
     topicName,
     topicDescription,

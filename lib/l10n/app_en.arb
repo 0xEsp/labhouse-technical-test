@@ -26,5 +26,14 @@
   "ranking_articles_count": "{count} articles",
   "ranking_query_too_long": "Maximum {count} characters",
   "ranking_reviews_count": "{count} reviews",
-  "ranking_articles_section": "Articles"
+  "ranking_articles_section": "Articles",
+  "new_ranking_model_label": "Model",
+  "error_invalid_api_key": "Your OpenAI API key is invalid. Check it in settings.",
+  "error_insufficient_quota": "Your OpenAI account doesn't have enough credit.",
+  "error_rate_limit": "Too many requests. Please try again in a moment.",
+  "error_content_policy": "The request violates OpenAI's content policy.",
+  "error_model_not_found": "The selected model isn't available.",
+  "error_invalid_request": "The request isn't valid. Try rephrasing your search.",
+  "error_authentication": "OpenAI authentication failed. Check your API key.",
+  "error_generic": "Something went wrong. Please try again."
 }

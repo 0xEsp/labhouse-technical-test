@@ -18,3 +18,12 @@ final class RankingGeneration extends RankingEvent {
 }
 
 final class RankingFetch extends RankingEvent {}
+
+final class RankingDeletion extends RankingEvent {
+  final int id;
+
+  const RankingDeletion(this.id);
+
+  @override
+  List<Object> get props => [id];
+}

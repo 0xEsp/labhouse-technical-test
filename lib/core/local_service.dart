@@ -7,6 +7,8 @@ abstract class LocalService {
 
   Future<List<T>> getAll<T>();
 
+  Future<void> delete<T>(int id);
+
   Future<void> clear<T>();
 }
 
@@ -35,6 +37,10 @@ final class LocalServiceDefault implements LocalService {
 
   @override
   Future<List<T>> getAll<T>() => _isar.collection<T>().where().findAll();
+
+  @override
+  Future<void> delete<T>(int id) =>
+      _isar.writeTxn(() => _isar.collection<T>().delete(id));
 
   @override
   Future<void> clear<T>() =>

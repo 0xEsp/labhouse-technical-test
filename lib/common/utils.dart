@@ -6,6 +6,7 @@ import 'package:lab_house/common/router/router_key.dart';
 import 'package:lab_house/core/api/model/api_response_error.m.dart';
 import 'package:lab_house/core/cache/cache_storage.dart';
 import 'package:lab_house/core/cache/model/cached_decimal_separator.m.dart';
+import 'package:lab_house/l10n/generated/app_localizations.dart';
 
 class Utils {
   static ARPError mapDioExceptionToARPError(DioException err) {
@@ -73,6 +74,63 @@ class Utils {
     400 || 404 || 422 => ARPErrorType.invalidRequest,
     _ => null,
   };
+
+  // MARK: - User-facing error messages
+
+  static String errorMessage(ARPError error, AppLocalizations lc) {
+    final code = error.code;
+    if (code != null) return _messageForCode(code, lc);
+
+    final base = _messageForType(error.type, lc);
+    final extra = error.extra?.values
+        .where((value) => value.isNotEmpty)
+        .join(' · ');
+
+    return (extra == null || extra.isEmpty) ? base : '$base\n$extra';
+  }
+
+  static String _messageForCode(ARPErrorCode code, AppLocalizations lc) =>
+      switch (code) {
+        ARPErrorCode.invalidApiKey => lc.error_invalid_api_key,
+        ARPErrorCode.insufficientQuota => lc.error_insufficient_quota,
+        ARPErrorCode.rateLimitExceeded => lc.error_rate_limit,
+        ARPErrorCode.contentPolicyViolation => lc.error_content_policy,
+        ARPErrorCode.modelNotFound => lc.error_model_not_found,
+        ARPErrorCode.contextLengthExceeded => lc.error_invalid_request,
+        ARPErrorCode.serverError ||
+        ARPErrorCode.unsupportedRegion => lc.error_generic,
+      };
+
+  static String _messageForType(ARPErrorType type, AppLocalizations lc) =>
+      switch (type) {
+        ARPErrorType.invalidRequest => lc.error_invalid_request,
+        ARPErrorType.authentication => lc.error_authentication,
+        ARPErrorType.rateLimit => lc.error_rate_limit,
+        ARPErrorType.internal => lc.error_generic,
+      };
+
+  static String removeDiacritics(String input) {
+    final Map<String, String> diacritics = {
+      'á': 'a',
+      'é': 'e',
+      'í': 'i',
+      'ó': 'o',
+      'ú': 'u',
+      'Á': 'A',
+      'É': 'E',
+      'Í': 'I',
+      'Ó': 'O',
+      'Ú': 'U',
+    };
+
+    String result = input;
+
+    diacritics.forEach((key, value) {
+      result = result.replaceAll(key, value);
+    });
+
+    return result;
+  }
 
   static String get languageCode {
     final locale = routerKey.currentContext != null

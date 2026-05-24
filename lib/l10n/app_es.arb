@@ -71,5 +71,23 @@
     }
   },
   "ranking_articles_section": "Artículos",
-  "@ranking_articles_section": {}
+  "@ranking_articles_section": {},
+  "new_ranking_model_label": "Modelo",
+  "@new_ranking_model_label": {},
+  "error_invalid_api_key": "Tu API key de OpenAI no es válida. Revísala en los ajustes.",
+  "@error_invalid_api_key": {},
+  "error_insufficient_quota": "No tienes crédito suficiente en tu cuenta de OpenAI.",
+  "@error_insufficient_quota": {},
+  "error_rate_limit": "Has hecho demasiadas peticiones. Inténtalo de nuevo en un momento.",
+  "@error_rate_limit": {},
+  "error_content_policy": "La petición infringe la política de contenido de OpenAI.",
+  "@error_content_policy": {},
+  "error_model_not_found": "El modelo seleccionado no está disponible.",
+  "@error_model_not_found": {},
+  "error_invalid_request": "La petición no es válida. Prueba a reformular tu búsqueda.",
+  "@error_invalid_request": {},
+  "error_authentication": "Error de autenticación con OpenAI. Revisa tu API key.",
+  "@error_authentication": {},
+  "error_generic": "Algo ha ido mal. Inténtalo de nuevo.",
+  "@error_generic": {}
 }

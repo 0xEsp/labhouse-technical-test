@@ -12,6 +12,7 @@ class SearchRankingToast extends StatelessWidget with LocaleManager {
   SearchRankingToast({super.key});
 
   final _fieldKey = GlobalKey<FormFieldState>();
+  final _model = ValueNotifier<OpenAIModel>(OpenAIModel.defaultModel);
   static const rankingQueryMaxLength = 200;
 
   @override
@@ -20,7 +21,9 @@ class SearchRankingToast extends StatelessWidget with LocaleManager {
 
     return BlocConsumer<RankingBloc, RankingState>(
       listenWhen: (prev, curr) => prev.isGenerating && !curr.isGenerating,
-      listener: (context, _) => Navigator.of(context).pop(),
+      listener: (context, state) {
+        if (state.error == null) Navigator.of(context).pop();
+      },
       builder: (context, state) {
         return PopScope(
           canPop: !state.isGenerating,
@@ -37,6 +40,16 @@ class SearchRankingToast extends StatelessWidget with LocaleManager {
                   ),
                 ),
                 const SizedBox(height: 16),
+                Text(
+                  lc.new_ranking_model_label,
+                  style: LabhouseTextTheme.medium(
+                    size: 13,
+                    color: JGColors.primaryGrey50,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _modelPicker(context),
+                const SizedBox(height: 24),
                 MultilineTextField(
                   fieldKey: _fieldKey,
                   placeholder: lc.new_ranking_placeholder,
@@ -59,6 +72,46 @@ class SearchRankingToast extends StatelessWidget with LocaleManager {
 
   // MARK: - Private Methods
 
+  Widget _modelPicker(BuildContext context) {
+    return ValueListenableBuilder<OpenAIModel>(
+      valueListenable: _model,
+      builder: (context, selected, _) => Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: OpenAIModel.values.map((model) {
+          final isSelected = model == selected;
+
+          return GestureDetector(
+            onTap: () => _model.value = model,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? JGColors.primaryTurquoise
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isSelected
+                      ? JGColors.primaryTurquoise
+                      : JGColors.primaryGrey20,
+                ),
+              ),
+              child: Text(
+                model.label,
+                style: LabhouseTextTheme.medium(
+                  size: 13,
+                  color: isSelected
+                      ? Colors.white
+                      : JGColors.onSurface(context),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   String? _validate(BuildContext context, String? value) {
     final lc = locale(context);
     final text = value?.trim() ?? '';
@@ -77,7 +130,7 @@ class SearchRankingToast extends StatelessWidget with LocaleManager {
     final query = (_fieldKey.currentState?.value as String?)?.trim() ?? '';
 
     context.read<RankingBloc>().add(
-      RankingGeneration(query: query, model: OpenAIModel.gpt4oMini),
+      RankingGeneration(query: query, model: _model.value),
     );
   }
 }

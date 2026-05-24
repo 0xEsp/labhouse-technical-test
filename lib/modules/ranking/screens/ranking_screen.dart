@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lab_house/common/presentation/appbar/labhouse_app_bar.dart';
+import 'package:lab_house/common/presentation/base/toast_base.dart';
 import 'package:lab_house/common/router/routes.m.dart';
+import 'package:lab_house/common/utils.dart';
+import 'package:lab_house/core/api/model/api_response_error.m.dart';
 import 'package:lab_house/core/managers/locale_manager.dart';
 import 'package:lab_house/core/managers/navigation_manager.dart';
 import 'package:lab_house/extensions/theme/labhouse_theme.dart';
@@ -28,7 +31,11 @@ class RankingScreen extends StatelessWidget
           ),
         ],
       ),
-      body: BlocBuilder<RankingBloc, RankingState>(
+      body: BlocConsumer<RankingBloc, RankingState>(
+        listenWhen: (prev, curr) =>
+            curr.error != null && prev.error != curr.error,
+        listener: (context, state) => _showErrorToast(context, state.error!),
+        buildWhen: (prev, curr) => curr.error == null,
         builder: (context, state) {
           return RefreshIndicator(
             color: JGColors.primaryTurquoise,
@@ -120,5 +127,22 @@ class RankingScreen extends StatelessWidget
 
   void _openDetail(BuildContext context, Ranking ranking) {
     push(context, to: Routes.rankingDetail, object: ranking);
+  }
+
+  void _showErrorToast(BuildContext context, ARPError error) {
+    final lc = locale(context);
+
+    toast(
+      context,
+      child: ToastBase(
+        content: Text(
+          Utils.errorMessage(error, lc),
+          style: LabhouseTextTheme.regular(
+            size: 15,
+            color: JGColors.onSurface(context),
+          ),
+        ),
+      ),
+    );
   }
 }
